@@ -1,13 +1,16 @@
 name: Spidermonkey
 
+
+permissions:
+  contents: write
+
 on:
   push:
-    branches-ignore: [ esr* ]
+    branches:
+      - "main"
+    tags:
+      - v*
   pull_request:
-    branches-ignore: [ esr* ]
-  schedule: 
-    # every fifth day
-    - cron: "10 10 1,5,10,15,20,25 * *"
 
 env:
   SHELL: /bin/bash
@@ -58,7 +61,12 @@ jobs:
         make
         sudo make install
         ccache -s
-    - name: Build Examples
-      run: |
-        meson _build || cat _build/meson-logs/meson-log.txt
-        ninja -C _build
+
+        cd ..
+        cp -r ./_build /tmp/mozjz_build
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: spidermonkey-x86_64-unknown-linux-gnu
+        path: /tmp/mozjz_build
