@@ -23,7 +23,7 @@ env:
   LD_LIBRARY_PATH: /usr/local/lib
 
 jobs:
-  build:
+  build-x86_64-unknown-linux-gnu:
 
     runs-on: ubuntu-latest
 
@@ -67,15 +67,39 @@ jobs:
 
         sudo apt install tree -y
 
-        cd ./_build /tmp/mozjz_build
+        cd /tmp/mozjz_build
 
         tree > /tmp/tree.txt
 
         rm -rf /tmp/mozjz_build/x86_64-unknown-linux-gnu
         rm -rf /tmp/mozjz_build/debug
+        tar -czf spidermonkey-x86_64-pc-windows-msvc.tar.gz -C /tmp/mozjz_build .
 
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v3
       with:
         name: spidermonkey-x86_64-unknown-linux-gnu
-        path: /tmp/mozjz_build,/tmp/tree.txt
+        path: /tmp/mozjz_build/spidermonkey-x86_64-pc-windows-msvc.tar.gz,/tmp/tree.txt
+  build:
+    needs:
+      [
+        "build-x86_64-unknown-linux-gnu",
+        # "build-windows",
+        # "build-macos-x86_64",
+        # "build-macos-aarch64",
+      ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: spidermonkey
+          pattern: spidermonkey-*
+          merge-multiple: true
+
+      - name: release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "spidermonkey/*.tar.gz"
