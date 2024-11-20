@@ -69,21 +69,24 @@ jobs:
 
         cd /tmp/mozjz_build
 
-        tree > ~/tree.txt
+        tree -hs > ~/tree.txt
 
         rm -rf /tmp/mozjz_build/x86_64-unknown-linux-gnu
         rm -rf /tmp/mozjz_build/debug
 
         cd ~
         tar -czf spidermonkey-x86_64-pc-windows-msvc.tar.gz -C /tmp/mozjz_build .
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: tree
+        path: ~/tree.txt
 
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v3
       with:
         name: spidermonkey-x86_64-unknown-linux-gnu
-        path: |
-          ~/spidermonkey-x86_64-pc-windows-msvc.tar.gz
-          ~/tree.txt
+        path: ~/spidermonkey-x86_64-pc-windows-msvc.tar.gz
 
   build:
     needs:
