@@ -63,7 +63,7 @@ jobs:
         ccache -s
 
         cd ..
-        cp -r ./_build /tmp/mozjz_build
+        cp -r ./_build/dist/bin /tmp/mozjz_build
 
         sudo apt install tree -y
 
@@ -71,16 +71,21 @@ jobs:
 
         tree -hs > ~/tree.txt
 
-        rm -rf /tmp/mozjz_build/x86_64-unknown-linux-gnu
-        rm -rf /tmp/mozjz_build/debug
+        # rm -rf /tmp/mozjz_build/x86_64-unknown-linux-gnu
+        # rm -rf /tmp/mozjz_build/debug
+        rm -rf /tmp/mozjz_build/Test*
+        rm -rf /tmp/mozjz_build/*.py
+        rm -rf /tmp/mozjz_build/*-tests
+        rm -rf /tmp/mozjz_build/nsinstall
+
 
         cd ~
         tar -czf spidermonkey-x86_64-pc-windows-msvc.tar.gz -C /tmp/mozjz_build .
-    - name: Upload Build Artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: tree
-        path: ~/tree.txt
+    # - name: Upload Build Artifacts
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: tree
+    #     path: ~/tree.txt
 
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v3
