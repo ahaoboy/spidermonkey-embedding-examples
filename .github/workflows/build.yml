@@ -58,7 +58,7 @@ jobs:
         ../configure --disable-jemalloc --with-system-zlib \
             --with-intl-api --enable-debug --enable-optimize
         ccache -z
-        make release
+        make
         sudo make install
         ccache -s
 
