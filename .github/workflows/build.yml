@@ -55,8 +55,8 @@ jobs:
         bash $GITHUB_WORKSPACE/tools/generic_lib.sh $GITHUB_WORKSPACE/meson.build
         mkdir _build
         cd _build
-        ../configure --disable-jemalloc --with-system-zlib \
-            --with-intl-api --enable-debug --enable-optimize
+        # ../configure --disable-jemalloc --with-system-zlib --with-intl-api --enable-debug --enable-optimize
+        ../configure --with-system-zlib --with-intl-api --enable-optimize --disable-debug
         ccache -z
         make
         sudo make install
@@ -80,7 +80,7 @@ jobs:
 
 
         cd ~
-        tar -czf spidermonkey-x86_64-pc-windows-msvc.tar.gz -C /tmp/mozjz_build .
+        tar -czf ~/spidermonkey-x86_64-unknown-linux-gnu.tar.gz -C /tmp/mozjz_build .
     # - name: Upload Build Artifacts
     #   uses: actions/upload-artifact@v3
     #   with:
@@ -91,7 +91,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: spidermonkey-x86_64-unknown-linux-gnu
-        path: ~/spidermonkey-x86_64-pc-windows-msvc.tar.gz
+        path: ~/spidermonkey-x86_64-unknown-linux-gnu.tar.gz
 
   build:
     needs:
